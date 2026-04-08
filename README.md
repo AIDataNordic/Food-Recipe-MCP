@@ -141,7 +141,7 @@ Add to your `claude_desktop_config.json`:
 {
   "mcpServers": {
     "food-recipes": {
-      "url": "https://mcp.aidatanorge.no/recipes-mcp"
+      "url": "https://recipes.aidatanorge.no/mcp"
     }
   }
 }
