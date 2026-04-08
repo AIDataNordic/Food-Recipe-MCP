@@ -151,7 +151,7 @@ Add to your `claude_desktop_config.json`:
 
 ## Live Demo
 
-Try the search interface at [mcp.aidatanorge.no/recipes](https://mcp.aidatanorge.no/recipes)
+Try the search interface at [recipes.aidatanorge.no](https://recipes.aidatanorge.no)
 
 ---
 
