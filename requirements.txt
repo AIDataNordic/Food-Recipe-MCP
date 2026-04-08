@@ -1,0 +1,6 @@
+fastmcp>=3.2.0
+qdrant-client
+sentence-transformers
+fastembed
+torch
+uvicorn
