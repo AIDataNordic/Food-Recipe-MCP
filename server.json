@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-16/server.schema.json",
+  "name": "io.github.AIDataNordic/food-recipe-mcp",
+  "title": "Food Recipe MCP",
+  "description": "Semantic search across 50,000+ food recipes for AI agents. Hybrid dense + sparse retrieval with cross-encoder reranking. Supports natural language queries with automatic translation, and filtering by diet, difficulty, time and servings.",
+  "repository": {
+    "url": "https://github.com/AIDataNordic/Food-Recipe-MCP",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "sse",
+      "url": "https://recipes.aidatanorge.no/mcp"
+    }
+  ]
+}
