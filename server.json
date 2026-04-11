@@ -10,7 +10,7 @@
   "version": "1.0.0",
   "remotes": [
     {
-      "type": "http",
+      "type": "streamable-http",
       "url": "https://recipes.aidatanorge.no/mcp"
     }
   ]
