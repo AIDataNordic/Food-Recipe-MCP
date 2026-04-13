@@ -21,7 +21,9 @@ from deep_translator import GoogleTranslator
 # --- Logging ---
 _log = logging.getLogger("recipe_mcp")
 _log.setLevel(logging.INFO)
-_fh = logging.FileHandler(os.path.expanduser("~/logs/recipe_mcp_server.log"))
+_log_dir = os.path.expanduser("~/logs")
+os.makedirs(_log_dir, exist_ok=True)
+_fh = logging.FileHandler(os.path.join(_log_dir, "recipe_mcp_server.log"))
 _fh.setFormatter(logging.Formatter("%(asctime)s %(message)s", datefmt="%Y-%m-%dT%H:%M:%S"))
 _log.addHandler(_fh)
 
