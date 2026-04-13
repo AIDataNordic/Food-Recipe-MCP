@@ -4,3 +4,4 @@ sentence-transformers
 fastembed
 torch
 uvicorn
+deep-translator
