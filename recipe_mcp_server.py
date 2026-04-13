@@ -220,7 +220,7 @@ async def recipes_demo_endpoint(request):
     return HTMLResponse(content=DEMO_HTML)
 
 if __name__ == "__main__":
-    transport = os.getenv("MCP_TRANSPORT", "http")
+    transport = os.getenv("MCP_TRANSPORT", "stdio")
     if transport == "stdio":
         mcp.run(transport="stdio")
     else:
