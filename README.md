@@ -100,6 +100,7 @@ search_recipes(
 ---
 
 ## Quickstart
+[![smithery badge](https://smithery.ai/badge/kontakt-qy0g/Food-Recipe-MCP)](https://smithery.ai/servers/kontakt-qy0g/Food-Recipe-MCP)
 
 ### 1. Install dependencies
 
