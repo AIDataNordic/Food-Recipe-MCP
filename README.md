@@ -2,6 +2,8 @@
 
 A production-grade semantic search server for food recipes — built for AI agents using the Model Context Protocol (MCP). Search across 50,000+ recipes with hybrid dense + sparse retrieval and cross-encoder reranking.
 
+[![smithery badge](https://smithery.ai/badge/kontakt-qy0g/Food-Recipe-MCP)](https://smithery.ai/servers/kontakt-qy0g/Food-Recipe-MCP)
+
 ---
 
 ## What This Is
@@ -34,31 +36,34 @@ Query (natural language)
 
 ## Data Coverage
 
-| Field            | Details                                      |
-|------------------|----------------------------------------------|
-| Total recipes    | 50,000+                                      |
-| Source           | food.com and others                          |
-| Fields           | title, description, ingredients, instructions, nutrition, rating, difficulty, diet, total_time, servings |
-| Diet tags        | vegetarian, vegan, gluten-free, dairy-free   |
-| Difficulty       | easy, medium, hard                           |
+| Field | Details |
+| --- | --- |
+| Total recipes | 50,000+ |
+| Source | food.com and others |
+| Fields | title, description, ingredients, instructions, nutrition, rating, difficulty, diet, total_time, servings |
+| Diet tags | vegetarian, vegan, gluten-free, dairy-free |
+| Difficulty | easy, medium, hard |
 
 ---
 
 ## Technical Stack
 
 **Search**
-- Dense embeddings: `intfloat/e5-large-v2` (1024 dim)
-- Sparse embeddings: `Qdrant/bm25` via fastembed
-- Fusion: Reciprocal Rank Fusion (RRF) in Qdrant
-- Reranker: `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`
+
+* Dense embeddings: `intfloat/e5-large-v2` (1024 dim)
+* Sparse embeddings: `Qdrant/bm25` via fastembed
+* Fusion: Reciprocal Rank Fusion (RRF) in Qdrant
+* Reranker: `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`
 
 **Serving**
-- FastMCP 3.2 over HTTP (`/mcp` endpoint)
-- Compatible with Claude, LangChain, and any MCP-capable agent
+
+* FastMCP 3.2 over HTTP (`/mcp` endpoint)
+* Compatible with Claude, LangChain, and any MCP-capable agent
 
 **Infrastructure**
-- Ubuntu Server 24 LTS, self-hosted
-- Qdrant vector database (self-hosted)
+
+* Ubuntu Server 24 LTS, self-hosted
+* Qdrant vector database (self-hosted)
 
 ---
 
@@ -99,8 +104,62 @@ search_recipes(
 
 ---
 
-## Quickstart
-[![smithery badge](https://smithery.ai/badge/kontakt-qy0g/Food-Recipe-MCP)](https://smithery.ai/servers/kontakt-qy0g/Food-Recipe-MCP)
+## Connect
+
+**Live endpoint:**
+```
+https://recipes.aidatanorge.no/mcp
+```
+
+### Claude Code (terminal)
+
+```bash
+claude mcp add food-recipes --transport http https://recipes.aidatanorge.no/mcp
+```
+
+### Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "food-recipes": {
+      "url": "https://recipes.aidatanorge.no/mcp"
+    }
+  }
+}
+```
+
+### FastMCP (Python)
+
+```python
+import fastmcp, asyncio
+
+async def main():
+    async with fastmcp.Client("https://recipes.aidatanorge.no/mcp") as client:
+        result = await client.call_tool("search_recipes", {
+            "query": "quick chicken pasta",
+            "max_minutes": 30,
+            "limit": 3
+        })
+        for recipe in result.structured_content["result"]:
+            print(recipe["title"], "-", recipe["total_time"], "min")
+
+asyncio.run(main())
+```
+
+### Via Smithery
+
+Available on [Smithery](https://smithery.ai/servers/kontakt-qy0g/Food-Recipe-MCP) as an alternative connection method:
+
+```bash
+npx -y @smithery/cli@latest mcp add kontakt-qy0g/Food-Recipe-MCP
+```
+
+---
+
+## Self-hosting
 
 ### 1. Install dependencies
 
@@ -116,38 +175,6 @@ python recipe_mcp_server.py
 
 Server starts at `http://localhost:8004/mcp`
 
-### 3. Connect with FastMCP client
-
-```python
-import fastmcp, asyncio
-
-async def main():
-    async with fastmcp.Client("https://food-recipe-mcp--kontakt-qy0g.run.tools/") as client:
-        result = await client.call_tool("search_recipes", {
-            "query": "quick chicken pasta",
-            "max_minutes": 30,
-            "limit": 3
-        })
-        for recipe in result.structured_content["result"]:
-            print(recipe["title"], "-", recipe["total_time"], "min")
-
-asyncio.run(main())
-```
-
-### 4. Connect with Claude Desktop
-
-Add to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "food-recipes": {
-      "url": "https://food-recipe-mcp--kontakt-qy0g.run.tools/"
-    }
-  }
-}
-```
-
 ---
 
 ## Live Demo
@@ -159,7 +186,7 @@ Try the search interface at [recipes.aidatanorge.no](https://recipes.aidatanorge
 ## Files
 
 | File | Description |
-|------|-------------|
+| --- | --- |
 | `recipe_mcp_server.py` | FastMCP server with hybrid search |
 | `mcp_client.py` | Example Python client |
 | `requirements.txt` | Python dependencies |
