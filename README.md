@@ -122,7 +122,7 @@ Server starts at `http://localhost:8004/mcp`
 import fastmcp, asyncio
 
 async def main():
-    async with fastmcp.Client("http://localhost:8004/mcp") as client:
+    async with fastmcp.Client("https://food-recipe-mcp--kontakt-qy0g.run.tools/") as client:
         result = await client.call_tool("search_recipes", {
             "query": "quick chicken pasta",
             "max_minutes": 30,
@@ -142,7 +142,7 @@ Add to your `claude_desktop_config.json`:
 {
   "mcpServers": {
     "food-recipes": {
-      "url": "https://recipes.aidatanorge.no/mcp"
+      "url": "https://food-recipe-mcp--kontakt-qy0g.run.tools/"
     }
   }
 }
