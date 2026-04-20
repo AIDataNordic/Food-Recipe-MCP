@@ -1,0 +1,8 @@
+.env
+.mcpregistry_github_token
+.mcpregistry_registry_token
+venv/
+__pycache__/
+*.log
+*.bak
+*.backup

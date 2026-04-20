@@ -2,7 +2,7 @@
 Recipe MCP Server - fastmcp
 Semantic search over recipe data with hybrid search (dense + sparse) and cross-encoder reranking.
 Uses e5-large-v2 embeddings (1024 dim) and BM25 sparse vectors.
-Queries are automatically translated to English before search.
+Queries are embedded directly without translation — supports Norwegian and English natively.
 """
 
 import os
@@ -16,7 +16,7 @@ from qdrant_client.models import (
 )
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from fastembed import SparseTextEmbedding
-from deep_translator import GoogleTranslator
+from langdetect import detect, LangDetectException
 
 # --- Logging ---
 _log = logging.getLogger("recipe_mcp")
@@ -53,19 +53,6 @@ _qdrant = QdrantClient(host=QDRANT_HOST, port=6333)
 mcp = FastMCP("recipe-mcp")
 
 
-def _translate_to_english(text: str) -> str:
-    """Translate query to English if needed. Returns original text on failure."""
-    try:
-        translated = GoogleTranslator(source="auto", target="en").translate(text)
-        if translated and translated != text:
-            _log.info(f"translated query='{text}' → '{translated}'")
-            return translated
-        return text
-    except Exception as e:
-        _log.warning(f"Translation failed for query='{text}': {e}")
-        return text
-
-
 @mcp.tool()
 async def ping(name: str = "world") -> str:
     """Simple connectivity test. Returns a greeting to confirm the server is running."""
@@ -89,8 +76,7 @@ async def search_recipes(
 
     Use natural language in the query to describe what you are looking
     for — cuisine, style, main ingredient, occasion, or mood all work
-    well. Queries in any language are supported and will be automatically
-    translated to English before search. Examples:
+    well. Norwegian and English are both supported natively. Examples:
         'quick Italian pasta for weeknight dinner'
         'Swedish meatballs with gravy'
         'healthy high-protein chicken bowl'
@@ -126,9 +112,12 @@ async def search_recipes(
     t0 = time.time()
     limit = min(limit, 20)
 
-    # Translate query to English before embedding
+    # Detect language for logging — no translation needed
     original_query = query
-    query = _translate_to_english(query)
+    try:
+        lang = detect(query)
+    except LangDetectException:
+        lang = "unknown"
 
     with torch.no_grad():
         # Dense vector with e5-large query prefix
@@ -168,7 +157,7 @@ async def search_recipes(
     )
 
     if not results.points:
-        _log.info(f"search_recipes query='{original_query}' translated='{query}' results=0 elapsed={time.time()-t0:.2f}s")
+        _log.info(f"search_recipes query='{original_query}' lang='{lang}' results=0 elapsed={time.time()-t0:.2f}s")
         return []
 
     candidates = results.points
@@ -180,7 +169,7 @@ async def search_recipes(
 
     elapsed = time.time() - t0
     _log.info(
-        f"search_recipes query='{original_query}' translated='{query}' "
+        f"search_recipes query='{original_query}' lang='{lang}' "
         f"results={min(limit, len(ranked))} elapsed={elapsed:.2f}s"
     )
 
@@ -221,6 +210,15 @@ async def recipes_demo_endpoint(request):
     """Demo side for oppskriftssøk"""
     return HTMLResponse(content=DEMO_HTML)
 
+@mcp.custom_route("/.well-known/mcp/server-card.json", methods=["GET"])
+async def server_card_endpoint(request):
+    """Smithery server card"""
+    import json
+    from starlette.responses import JSONResponse
+    with open(os.path.join(os.path.dirname(__file__), "server_card.json"), "r") as f:
+        card = json.load(f)
+
+    return JSONResponse(content=card)
 if __name__ == "__main__":
     transport = os.getenv("MCP_TRANSPORT", "stdio")
     if transport == "stdio":
