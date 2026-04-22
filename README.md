@@ -64,63 +64,39 @@ Query (natural language)
 
 ---
 
-## MCP Tools
-
-### `search_filings`
-
-Semantic search over Nordic company filings, press releases and macroeconomic summaries.
+## MCP Tool
 
 ```python
-search_filings(
-    query="Nordea net interest margin outlook 2025",
-    report_type="quarterly_report",  # annual_report | quarterly_report | press_release | macro_summary
-    country="SE",                    # NO | SE | DK | FI
-    ticker="NDA",                    # optional — filter by company ticker
-    fiscal_year=2025,                # optional — filter by year
-    sector="energy",                 # optional — seafood | energy | shipping
-    limit=10                         # default 5, max 20
+search_recipes(
+    query="quick chicken pasta",       # required — natural language, English or Norwegian
+    diet="vegetarian",                 # optional: vegetarian, vegan, gluten-free, dairy-free
+    difficulty="easy",                 # optional: easy, medium, hard
+    max_minutes=30,                    # optional: maximum total time in minutes
+    servings=4,                        # optional: included in query context, not used for filtering
+    limit=5                            # optional: number of results (default 5)
 )
-# Returns semantically ranked text chunks with rerank_score, hybrid_score, vector_score,
-# company, ticker, country, fiscal_year, report_type, filing_date and full text.
+# Returns semantically ranked recipes with ingredients, instructions, nutrition, and ratings
+# Norwegian and English queries are both supported natively — no translation step
 ```
 
----
-
-### `get_company_info`
-
-Look up a company in the official business registry.
-
-```python
-get_company_info(
-    identifier="923609016",  # org/CVR/business ID
-    country="NO"             # NO (Brønnøysund) | DK (CVR) | FI (PRH)
-)
-# Returns company name, status and registered address.
-```
-
----
-
-### `parse_pdf_to_text`
-
-Download a PDF from a URL and extract all text, page by page.
-
-```python
-parse_pdf_to_text(
-    pdf_url="https://example.com/annual_report_2024.pdf"
-)
-# Returns extracted text with page separators.
-# Useful for reading report attachments not indexed in the main database.
-```
-
----
-
-### `ping`
-
-Connectivity test.
-
-```python
-ping(name="world")
-# Returns: "Hello world! Nordic MCP server is running."
+### Example response
+```json
+[
+  {
+    "rerank_score": 7.96,
+    "title": "quick and easy chicken pasta salad",
+    "description": "great use for left-over chicken.",
+    "total_time": 25,
+    "difficulty": "medium",
+    "diet": [],
+    "main_ingredient": "chicken",
+    "ingredients": ["cooked chicken", "pasta shells", "tomatoes", "italian dressing"],
+    "instructions": ["combine ingredients", "pour dressing", "chill 1 hour"],
+    "nutrition": {"calories": 424, "protein_g": 26, "carbs_g": 38.5, "fat_g": 19.5},
+    "rating": 4.8,
+    "rating_count": 5
+  }
+]
 ```
 
 ---
