@@ -1,3 +1,6 @@
+> [!WARNING]
+> 🚧 **Server under maintenance** — The hosted endpoint (`mcp.aidatanorge.no/recipes-mcp`) is temporarily unavailable. The server can still be run locally by following the [Quickstart](#quickstart) instructions. We'll update this notice when the service is back online.
+
 # AIDataNordic — Food Recipe MCP
 A production-grade semantic search server for food recipes — built for AI agents using the Model Context Protocol (MCP). Search across 53,000+ recipes with hybrid dense + sparse retrieval and cross-encoder reranking.
 
