@@ -5,3 +5,4 @@ fastembed
 torch
 uvicorn
 deep-translator
+langdetect
