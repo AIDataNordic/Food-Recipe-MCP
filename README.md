@@ -5,7 +5,8 @@
 Semantic search over 50,000+ food recipes — built for AI agents and LLMs. Two-stage hybrid retrieval (dense + sparse BM25, fused via RRF) with cross-encoder reranking. Supports natural language queries in Norwegian and English.
 
 **Live endpoint:** `https://recipes.aidatanorge.no/mcp`  
-**Transport:** `streamable-http`
+**Transport:** `streamable-http`  
+**Demo:** [https://recipes.aidatanorge.no/](https://recipes.aidatanorge.no/)
 
 ---
 
@@ -28,6 +29,15 @@ Or with Claude Code:
 ```bash
 claude mcp add --transport http food-recipe https://recipes.aidatanorge.no/mcp
 ```
+
+---
+
+## Quick Test
+
+**Try the live demo in your browser:**  
+[https://recipes.aidatanorge.no/](https://recipes.aidatanorge.no/)
+
+No installation or configuration needed.
 
 ---
 
