@@ -223,16 +223,42 @@ async def server_card_endpoint(request):
         card = json.load(f)
 
     return JSONResponse(content=card)
+class AcceptPatchMiddleware:
+    """Ensure Accept header includes both content types required by streamable-http."""
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http":
+            headers = list(scope["headers"])
+            accept_idx = next((i for i, (k, _) in enumerate(headers) if k == b"accept"), None)
+            current = headers[accept_idx][1].decode() if accept_idx is not None else ""
+            if "text/event-stream" not in current:
+                new_accept = (current + ", application/json, text/event-stream").lstrip(", ")
+                if accept_idx is not None:
+                    headers[accept_idx] = (b"accept", new_accept.encode())
+                else:
+                    headers.append((b"accept", new_accept.encode()))
+                scope["headers"] = headers
+        await self.app(scope, receive, send)
+
+
 if __name__ == "__main__":
     transport = os.getenv("MCP_TRANSPORT", "stdio")
     if transport == "stdio":
         mcp.run(transport="stdio")
     else:
+        from starlette.middleware import Middleware
+        from starlette.middleware.cors import CORSMiddleware
         port = int(os.getenv("MCP_PORT", 8004))
         print(f"→ Demo available at http://0.0.0.0:{port}/")
         print(f"→ Starting Recipe MCP server at http://0.0.0.0:{port}/mcp")
-        import uvicorn
-        from starlette.middleware.cors import CORSMiddleware
-        app = mcp.http_app(path="/mcp")
-        app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-        uvicorn.run(app, host="0.0.0.0", port=port)
+        mcp.run(
+            transport="streamable-http",
+            host="0.0.0.0",
+            port=port,
+            middleware=[
+                Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]),
+                Middleware(AcceptPatchMiddleware),
+            ],
+        )
