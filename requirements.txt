@@ -1,4 +1,4 @@
-fastmcp>=3.2.0
+fastmcp>=3.2.4
 qdrant-client
 sentence-transformers
 fastembed
