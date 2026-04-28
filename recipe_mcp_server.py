@@ -257,6 +257,7 @@ if __name__ == "__main__":
             transport="streamable-http",
             host="0.0.0.0",
             port=port,
+            stateless_http=True,
             middleware=[
                 Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]),
                 Middleware(AcceptPatchMiddleware),
