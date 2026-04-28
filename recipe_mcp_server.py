@@ -227,4 +227,8 @@ if __name__ == "__main__":
         port = int(os.getenv("MCP_PORT", 8004))
         print(f"→ Demo available at http://0.0.0.0:{port}/")
         print(f"→ Starting Recipe MCP server at http://0.0.0.0:{port}/mcp")
-        mcp.run(transport="http", host="0.0.0.0", port=port, path="/mcp")
+        import uvicorn
+        from starlette.middleware.cors import CORSMiddleware
+        app = mcp.http_app(path="/mcp")
+        app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+        uvicorn.run(app, host="0.0.0.0", port=port)
