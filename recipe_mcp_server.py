@@ -16,7 +16,11 @@ from qdrant_client.models import (
 )
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from fastembed import SparseTextEmbedding
-from langdetect import detect, LangDetectException
+try:
+    from langdetect import detect, LangDetectException
+except ImportError:
+    def detect(text): return "unknown"
+    LangDetectException = Exception
 
 # --- Logging ---
 _log = logging.getLogger("recipe_mcp")
